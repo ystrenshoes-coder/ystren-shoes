@@ -10,7 +10,7 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/producto/${product.id}`}
-      className="group flex w-56 shrink-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:shadow-lg"
+      className="group flex w-56 shrink-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-900/10"
     >
       <div className="relative aspect-square w-full bg-gray-100">
         {cover ? (
@@ -22,14 +22,14 @@ export default function ProductCard({ product }: { product: Product }) {
           />
         ) : null}
         {product.is_new ? (
-          <span className="absolute left-2 top-2 rounded-full bg-orange-600 px-2 py-0.5 text-xs font-bold text-white">
+          <span className="absolute left-2 top-2 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-bold text-white">
             Nuevo
           </span>
         ) : null}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-4">
         {product.brand ? (
-          <span className="text-xs font-semibold uppercase tracking-wide text-orange-600">
+          <span className="text-xs font-semibold uppercase tracking-wide text-blue-600">
             {product.brand}
           </span>
         ) : null}

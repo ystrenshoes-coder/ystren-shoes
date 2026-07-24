@@ -146,7 +146,7 @@ export default function CarritoPage() {
         <button
           type="submit"
           disabled={loading}
-          className="rounded-full bg-orange-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           {loading ? "Redirigiendo a Wompi..." : "Pagar con Wompi"}
         </button>

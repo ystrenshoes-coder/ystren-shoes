@@ -19,7 +19,7 @@ export default async function Home() {
     <>
       <HeroVideo />
       <ProductsCarousel title="Productos populares" products={popular} />
-      <div className="bg-orange-50 py-3 text-sm font-semibold text-orange-700">
+      <div className="bg-blue-50 py-3 text-sm font-semibold text-blue-700">
         <Marquee text="Envios a nivel nacional | Pago seguro con Wompi | Cambios sin complicaciones" />
       </div>
       <CategoryCards categories={categories} />

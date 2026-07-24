@@ -31,8 +31,8 @@ export default function AddToCartButton({ product }: { product: Product }) {
             onClick={() => setSize(s.size)}
             className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
               size === s.size
-                ? "border-orange-600 bg-orange-600 text-white"
-                : "border-gray-300 text-gray-700 hover:border-orange-600"
+                ? "border-blue-600 bg-blue-600 text-white"
+                : "border-gray-300 text-gray-700 hover:border-blue-600"
             }`}
           >
             {s.size}
@@ -42,7 +42,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
       <button
         type="button"
         onClick={handleAdd}
-        className="w-full rounded-full bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
+        className="w-full rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
       >
         {added ? "Agregado!" : "Agregar al carrito"}
       </button>

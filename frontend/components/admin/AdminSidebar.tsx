@@ -61,7 +61,7 @@ export default function AdminSidebar() {
                 onClick={() => setOpen(false)}
                 className={`rounded-md px-3 py-2 text-sm font-medium ${
                   pathname === item.href
-                    ? "bg-orange-50 text-orange-600"
+                    ? "bg-blue-50 text-blue-600"
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
