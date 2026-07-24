@@ -3,7 +3,8 @@
 import { usePathname } from "next/navigation";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
-const DEFAULT_MESSAGE = "Hola! Tengo una pregunta sobre sus productos.";
+const DEFAULT_MESSAGE =
+  "Hola, vengo de la pagina web y quiero hablar con un asesor";
 
 export default function WhatsappButton() {
   const pathname = usePathname();
