@@ -19,7 +19,9 @@ export default async function AdminPedidosPage() {
   const supabase = await createClient();
   const { data: orders } = await supabase
     .from("orders")
-    .select("id, customer_name, customer_email, customer_phone, subtotal, status, created_at")
+    .select(
+      "id, customer_name, customer_id_number, customer_email, customer_phone, customer_city, subtotal, status, created_at"
+    )
     .order("created_at", { ascending: false });
 
   return (
@@ -37,6 +39,7 @@ export default async function AdminPedidosPage() {
               <th className="px-4 py-3">Fecha</th>
               <th className="px-4 py-3">Cliente</th>
               <th className="px-4 py-3">Contacto</th>
+              <th className="px-4 py-3">Ciudad</th>
               <th className="px-4 py-3">Subtotal</th>
               <th className="px-4 py-3">Estado</th>
             </tr>
@@ -47,11 +50,19 @@ export default async function AdminPedidosPage() {
                 <td className="px-4 py-3 text-gray-600">
                   {new Date(order.created_at).toLocaleString("es-CO")}
                 </td>
-                <td className="px-4 py-3 font-medium text-gray-900">{order.customer_name}</td>
+                <td className="px-4 py-3 font-medium text-gray-900">
+                  {order.customer_name}
+                  {order.customer_id_number ? (
+                    <span className="block text-xs font-normal text-gray-500">
+                      C.C. {order.customer_id_number}
+                    </span>
+                  ) : null}
+                </td>
                 <td className="px-4 py-3 text-gray-600">
                   {order.customer_email}
                   {order.customer_phone ? ` · ${order.customer_phone}` : ""}
                 </td>
+                <td className="px-4 py-3 text-gray-600">{order.customer_city ?? "-"}</td>
                 <td className="px-4 py-3 text-gray-600">{formatPrice(order.subtotal)}</td>
                 <td className="px-4 py-3">
                   <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_CLASS[order.status] ?? "bg-gray-100 text-gray-600"}`}>

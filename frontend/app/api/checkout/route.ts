@@ -14,8 +14,10 @@ type CheckoutItem = {
 type CheckoutBody = {
   customer: {
     name: string;
+    idNumber?: string;
     email: string;
     phone?: string;
+    city?: string;
     address?: string;
   };
   items: CheckoutItem[];
@@ -41,8 +43,10 @@ export async function POST(request: Request) {
     .insert({
       wompi_reference: reference,
       customer_name: body.customer.name,
+      customer_id_number: body.customer.idNumber ?? null,
       customer_email: body.customer.email,
       customer_phone: body.customer.phone ?? null,
+      customer_city: body.customer.city ?? null,
       shipping_address: body.customer.address ?? null,
       subtotal,
       status: "pending",
@@ -87,6 +91,13 @@ export async function POST(request: Request) {
   checkoutUrl.searchParams.set("redirect-url", redirectUrl);
   checkoutUrl.searchParams.set("customer-data:email", body.customer.email);
   checkoutUrl.searchParams.set("customer-data:full-name", body.customer.name);
+  if (body.customer.phone) {
+    checkoutUrl.searchParams.set("customer-data:phone-number", body.customer.phone);
+  }
+  if (body.customer.idNumber) {
+    checkoutUrl.searchParams.set("customer-data:legal-id", body.customer.idNumber);
+    checkoutUrl.searchParams.set("customer-data:legal-id-type", "CC");
+  }
 
   return NextResponse.json({ checkoutUrl: checkoutUrl.toString() });
 }

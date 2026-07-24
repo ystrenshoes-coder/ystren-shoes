@@ -11,11 +11,22 @@ import {
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
-// TODO: reemplazar por los links reales de cada red social del cliente.
 const SOCIALS = [
-  { name: "Facebook", href: "https://facebook.com", Icon: FacebookIcon },
-  { name: "Instagram", href: "https://instagram.com", Icon: InstagramIcon },
-  { name: "TikTok", href: "https://tiktok.com", Icon: TikTokIcon },
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/share/16AyQkN1NL6/",
+    Icon: FacebookIcon,
+  },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/ystren_shoes?igsh=MWpncTl2eWYxMWYyeg==",
+    Icon: InstagramIcon,
+  },
+  {
+    name: "TikTok",
+    href: "https://www.tiktok.com/@ystren_shoes?_r=1&_t=ZS-98JBpMHhccG",
+    Icon: TikTokIcon,
+  },
   {
     name: "WhatsApp",
     href: `https://wa.me/${WHATSAPP_NUMBER}`,
