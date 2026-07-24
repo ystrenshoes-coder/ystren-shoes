@@ -35,7 +35,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 md:grid-cols-4">
         <div>
           <h3 className="text-lg font-bold uppercase text-white">
-            Ystren<span className="text-orange-500">Shoes</span>
+            Ystren<span className="text-blue-500">Shoes</span>
           </h3>
           <p className="mt-2 text-sm text-gray-400">
             Calzado deportivo para basketball, futbol, hombre y mujer.
@@ -58,7 +58,7 @@ export default function Footer() {
           <h4 className="text-sm font-semibold uppercase text-white">Ayuda</h4>
           <ul className="mt-3 space-y-2 text-sm text-gray-400">
             <li>
-              <Link href="/politicas" className="hover:text-orange-500">
+              <Link href="/politicas" className="hover:text-blue-500">
                 Politicas de la empresa
               </Link>
             </li>
@@ -73,7 +73,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={name}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-600 text-white hover:bg-orange-700"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700"
           >
             <Icon />
           </a>

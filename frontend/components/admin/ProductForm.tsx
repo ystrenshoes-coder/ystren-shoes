@@ -323,7 +323,7 @@ export default function ProductForm({
       <button
         type="submit"
         disabled={loading}
-        className="mt-2 rounded-full bg-orange-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+        className="mt-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
       >
         {loading ? "Guardando..." : "Guardar"}
       </button>

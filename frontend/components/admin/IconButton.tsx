@@ -25,7 +25,7 @@ export function DeleteIcon() {
 export const iconButtonClass = (variant: "edit" | "delete") =>
   `flex h-7 w-7 items-center justify-center rounded-md border ${
     variant === "edit"
-      ? "border-orange-300 text-orange-600 hover:bg-orange-50"
+      ? "border-blue-300 text-blue-600 hover:bg-blue-50"
       : "border-red-300 text-red-600 hover:bg-red-50"
   }`;
 

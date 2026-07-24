@@ -14,7 +14,7 @@ export default function ProductsTable({ products }: { products: Product[] }) {
         <h1 className="text-2xl font-bold text-gray-900">Productos</h1>
         <Link
           href="/admin/productos/nuevo"
-          className="rounded-full bg-orange-600 px-4 py-2 text-sm font-semibold text-white"
+          className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
         >
           Nuevo producto
         </Link>

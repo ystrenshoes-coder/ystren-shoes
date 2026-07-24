@@ -4,7 +4,7 @@ export default function PoliciesBanner() {
   return (
     <Link
       href="/politicas"
-      className="block bg-orange-600 py-6 text-center text-white transition hover:bg-orange-700"
+      className="block bg-gradient-to-r from-slate-950 via-blue-800 to-slate-950 py-6 text-center text-white transition hover:via-blue-700"
     >
       <p className="text-lg font-semibold">
         Conoce nuestras politicas de cambios, envios y garantia

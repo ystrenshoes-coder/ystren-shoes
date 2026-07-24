@@ -21,7 +21,10 @@ export default function ProductsCarousel({
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10">
-      <h2 className="mb-4 text-2xl font-bold uppercase text-gray-900">{title}</h2>
+      <h2 className="mb-4 text-2xl font-bold uppercase text-gray-900">
+        {title}
+        <span className="text-blue-600">.</span>
+      </h2>
       <div className="relative">
         <div
           ref={trackRef}
@@ -35,7 +38,7 @@ export default function ProductsCarousel({
           type="button"
           onClick={() => scrollBy(-1)}
           aria-label={`${title}: anterior`}
-          className="absolute -left-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-gray-700 shadow-md hover:bg-gray-100 sm:flex"
+          className="absolute -left-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-blue-700 shadow-md ring-1 ring-slate-200 hover:bg-blue-600 hover:text-white sm:flex"
         >
           ‹
         </button>
@@ -43,7 +46,7 @@ export default function ProductsCarousel({
           type="button"
           onClick={() => scrollBy(1)}
           aria-label={`${title}: siguiente`}
-          className="absolute -right-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-gray-700 shadow-md hover:bg-gray-100 sm:flex"
+          className="absolute -right-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-blue-700 shadow-md ring-1 ring-slate-200 hover:bg-blue-600 hover:text-white sm:flex"
         >
           ›
         </button>

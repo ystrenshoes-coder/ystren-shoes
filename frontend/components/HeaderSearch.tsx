@@ -30,7 +30,7 @@ export default function HeaderSearch() {
       <button
         type="submit"
         aria-label="Buscar"
-        className="shrink-0 rounded-full bg-gray-900 px-4 py-1.5 text-sm font-medium text-white"
+        className="shrink-0 rounded-full bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-500"
       >
         🔍
       </button>
