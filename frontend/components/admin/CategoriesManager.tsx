@@ -117,7 +117,7 @@ export default function CategoriesManager({ categories }: { categories: Category
                   <Image src={category.image_url} alt={category.name} fill className="object-cover" />
                 </div>
               ) : (
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-600">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-100 font-bold text-orange-600">
                   {category.name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -143,7 +143,7 @@ export default function CategoriesManager({ categories }: { categories: Category
                 <button
                   type="button"
                   onClick={() => handleRename(category.id)}
-                  className="text-xs font-medium text-blue-600 hover:underline"
+                  className="text-xs font-medium text-orange-600 hover:underline"
                 >
                   Guardar
                 </button>
@@ -182,7 +182,7 @@ export default function CategoriesManager({ categories }: { categories: Category
         <button
           type="submit"
           disabled={loading}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           Agregar
         </button>

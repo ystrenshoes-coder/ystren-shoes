@@ -114,7 +114,7 @@ export default function BrandsManager({ brands }: { brands: Brand[] }) {
                   <Image src={brand.logo_url} alt={brand.name} fill className="object-contain" />
                 </div>
               ) : (
-                <div className="flex h-10 w-16 shrink-0 items-center justify-center rounded bg-blue-100 text-xs font-bold text-blue-600">
+                <div className="flex h-10 w-16 shrink-0 items-center justify-center rounded bg-orange-100 text-xs font-bold text-orange-600">
                   {brand.name}
                 </div>
               )}
@@ -140,7 +140,7 @@ export default function BrandsManager({ brands }: { brands: Brand[] }) {
                 <button
                   type="button"
                   onClick={() => handleRename(brand.id)}
-                  className="text-xs font-medium text-blue-600 hover:underline"
+                  className="text-xs font-medium text-orange-600 hover:underline"
                 >
                   Guardar
                 </button>
@@ -179,7 +179,7 @@ export default function BrandsManager({ brands }: { brands: Brand[] }) {
         <button
           type="submit"
           disabled={loading}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="rounded-md bg-orange-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           Agregar
         </button>

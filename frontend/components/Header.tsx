@@ -14,33 +14,27 @@ export default async function Header() {
   const { data } = await supabase.auth.getUser();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-blue-900/40 bg-slate-950 shadow-lg shadow-black/20">
-      <div className="mx-auto grid max-w-6xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3">
-        <div className="flex items-center justify-start">
-          <HamburgerMenu categories={categories} />
+    <header className="sticky top-0 z-40 border-b border-gray-200 bg-white">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3">
+        <HamburgerMenu categories={categories} />
+        <Logo />
+        <div className="order-3 w-full md:order-none md:flex md:flex-1 md:justify-center">
+          <HeaderSearch />
         </div>
-
-        <div className="flex justify-center">
-          <Logo />
-        </div>
-
-        <nav className="flex items-center justify-end gap-4 text-sm font-medium text-blue-100">
+        <nav className="ml-auto flex shrink-0 items-center gap-5 text-sm font-medium text-gray-700">
           {!data.user ? <CartBadge /> : null}
           {data.user ? (
             <>
-              <span className="hidden text-blue-300 sm:inline">{data.user.email}</span>
+              <span className="hidden text-gray-500 sm:inline">{data.user.email}</span>
               <Link
                 href="/admin"
-                className="rounded-full bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-500"
+                className="rounded-full bg-gray-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-gray-700"
               >
                 Panel admin
               </Link>
             </>
           ) : null}
         </nav>
-      </div>
-      <div className="flex justify-center border-t border-blue-900/30 bg-slate-900/60 px-4 py-2">
-        <HeaderSearch />
       </div>
     </header>
   );

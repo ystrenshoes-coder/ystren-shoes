@@ -31,7 +31,7 @@ export default async function ProductoPage({
       </div>
       <div className="flex flex-col gap-3">
         {product.brand ? (
-          <span className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+          <span className="text-sm font-semibold uppercase tracking-wide text-orange-600">
             {product.brand}
           </span>
         ) : null}
