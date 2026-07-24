@@ -27,7 +27,7 @@ export default async function AdminPedidosPage() {
       <h1 className="text-2xl font-bold text-gray-900">Pedidos</h1>
       <p className="mt-1 text-sm text-gray-600">
         Los pedidos se crean cuando un cliente inicia el pago en el carrito y
-        se marcan como "Pagado" cuando Wompi confirma la transaccion.
+        se marcan como &quot;Pagado&quot; cuando Wompi confirma la transaccion.
       </p>
 
       <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
