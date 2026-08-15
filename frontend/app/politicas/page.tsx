@@ -8,27 +8,54 @@ export default function PoliticasPage() {
       </div>
       <div className="mt-8 space-y-8 text-sm text-gray-700">
         <div>
-          <h2 className="text-lg font-bold uppercase tracking-wide text-gray-900">Envios</h2>
+          <h2 className="text-lg font-bold uppercase tracking-wide text-gray-900">
+            Envios
+          </h2>
           <p className="mt-1">
-            Contenido pendiente por confirmar con el cliente: tiempos y
-            costos de envio a nivel nacional.
+            Realizamos envios contra entrega en Bogota y contamos con envios
+            nacionales a cualquier ciudad de Colombia.
           </p>
         </div>
         <div>
           <h2 className="text-lg font-bold uppercase tracking-wide text-gray-900">
             Cambios y devoluciones
           </h2>
-          <p className="mt-1">
-            Contenido pendiente por confirmar con el cliente: condiciones
-            para cambios de talla o devoluciones.
-          </p>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            <li>
+              Aceptamos cambios de talla siempre que la solicitud sea
+              realizada dentro de los tres (3) dias siguientes a la recepcion
+              del pedido.
+            </li>
+            <li>
+              El cambio aplica unicamente por la misma referencia adquirida y
+              esta sujeto a disponibilidad de la talla solicitada.
+            </li>
+            <li>
+              No realizamos devoluciones de dinero. Los cambios se gestionan
+              exclusivamente por talla y bajo las condiciones establecidas.
+            </li>
+          </ul>
         </div>
         <div>
-          <h2 className="text-lg font-bold uppercase tracking-wide text-gray-900">Garantia</h2>
-          <p className="mt-1">
-            Contenido pendiente por confirmar con el cliente: cobertura de
-            garantia por defectos de fabrica.
-          </p>
+          <h2 className="text-lg font-bold uppercase tracking-wide text-gray-900">
+            Garantia
+          </h2>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            <li>
+              Todos nuestros productos cuentan con un (1) mes de garantia por
+              defectos de fabricacion.
+            </li>
+            <li>
+              La garantia aplica para casos como despegues, costuras
+              defectuosas o fallas relacionadas directamente con el proceso de
+              fabricacion.
+            </li>
+            <li>
+              La garantia no cubre danos ocasionados por el uso inadecuado,
+              desgaste normal del producto o modificaciones realizadas por
+              terceros.
+            </li>
+          </ul>
         </div>
       </div>
     </section>
