@@ -11,10 +11,22 @@ export default function PoliticasPage() {
           <h2 className="text-lg font-bold uppercase tracking-wide text-gray-900">
             Envios
           </h2>
-          <p className="mt-1">
-            Realizamos envios contra entrega en Bogota y contamos con envios
-            nacionales a cualquier ciudad de Colombia.
-          </p>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            <li>
+              Bogota: se cuenta con la modalidad de pago contra entrega,
+              permitiendo realizar el pago al momento de recibir el pedido.
+            </li>
+            <li>
+              Envios nacionales: se realizan despachos a cualquier ciudad de
+              Colombia mediante empresas transportadoras, con un tiempo
+              estimado de entrega de 2 a 3 dias habiles.
+            </li>
+            <li>
+              Una vez realizado el despacho, se proporciona la guia de envio
+              correspondiente, con la cual se puede realizar el seguimiento del
+              pedido durante todo el proceso de entrega.
+            </li>
+          </ul>
         </div>
         <div>
           <h2 className="text-lg font-bold uppercase tracking-wide text-gray-900">
@@ -51,7 +63,7 @@ export default function PoliticasPage() {
               fabricacion.
             </li>
             <li>
-              La garantia no cubre danos ocasionados por el uso inadecuado,
+              La garantia no cubre daños ocasionados por el uso inadecuado,
               desgaste normal del producto o modificaciones realizadas por
               terceros.
             </li>
