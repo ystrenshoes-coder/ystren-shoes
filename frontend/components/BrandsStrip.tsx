@@ -4,10 +4,13 @@ import type { CSSProperties } from "react";
 import Reveal from "@/components/Reveal";
 import type { Brand } from "@/lib/api";
 
-export default function BrandsStrip({ brands }: { brands: Brand[] }) {
-  if (brands.length === 0) return null;
+const MARCA_IMAGES = Array.from(
+  { length: 10 },
+  (_, i) => `/marcas/marca-${String(i + 1).padStart(2, "0")}.jpg`,
+);
 
-  const loop = [...brands, ...brands];
+export default function BrandsStrip({ brands = [] }: { brands?: Brand[] }) {
+  const loop = [...MARCA_IMAGES, ...MARCA_IMAGES];
 
   return (
     <section className="border-y border-gray-100 bg-gray-50 py-12">
@@ -20,30 +23,29 @@ export default function BrandsStrip({ brands }: { brands: Brand[] }) {
       </div>
       <div className="marquee-pause mt-8 overflow-hidden">
         <div
-          className="flex w-max animate-marquee items-center"
+          className="flex w-max animate-marquee items-center py-2"
           style={{ "--marquee-duration": "28s" } as CSSProperties}
         >
-          {loop.map((brand, index) => (
-            <Link
-              key={`${brand.id}-${index}`}
-              href={`/productos?brand=${brand.slug}`}
-              className="mx-8 flex h-20 w-40 items-center justify-center"
-            >
-              {brand.logo_url ? (
-                <Image
-                  src={brand.logo_url}
-                  alt={brand.name}
-                  width={160}
-                  height={80}
-                  className="h-full w-full object-contain opacity-60 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
-                />
-              ) : (
-                <span className="text-lg font-black uppercase tracking-wider text-gray-400 transition hover:text-gray-900">
-                  {brand.name}
-                </span>
-              )}
-            </Link>
-          ))}
+          {loop.map((src, index) => {
+            const brand = brands[index % brands.length];
+            return (
+              <Link
+                key={`${src}-${index}`}
+                href={brand ? `/productos?brand=${brand.slug}` : "/productos"}
+                className="mx-3"
+              >
+                <div className="group relative flex h-20 w-44 items-center justify-center overflow-hidden rounded-2xl bg-slate-950 p-3 shadow-lg shadow-slate-900/25 ring-1 ring-slate-700/40 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-slate-500/60">
+                  <Image
+                    src={src}
+                    alt={brand?.name ?? `Marca ${index + 1}`}
+                    fill
+                    sizes="176px"
+                    className="object-contain transition duration-300 group-hover:scale-105"
+                  />
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
