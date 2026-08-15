@@ -52,8 +52,10 @@ export default function CarritoPage() {
 
   if (items.length === 0) {
     return (
-      <section className="mx-auto max-w-3xl px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Tu carrito esta vacio</h1>
+      <section className="mx-auto max-w-3xl px-4 py-20 text-center">
+        <h1 className="text-3xl font-black uppercase tracking-tight text-gray-900">
+          Tu carrito esta vacio
+        </h1>
         <p className="mt-2 text-gray-600">Agrega productos para continuar con tu compra.</p>
       </section>
     );
@@ -61,7 +63,7 @@ export default function CarritoPage() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-2xl font-bold uppercase text-gray-900">
+      <h1 className="text-3xl font-black uppercase tracking-tight text-gray-900">
         Tu <span className="text-blue-600">carrito</span>
       </h1>
 
@@ -220,7 +222,7 @@ export default function CarritoPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-2 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-slate-950 via-blue-700 to-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition hover:via-blue-600 disabled:opacity-50"
+                className="mt-2 flex items-center justify-center gap-2 rounded-full bg-blue-600 px-4 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:opacity-50"
               >
                 {loading ? "Redirigiendo a Wompi..." : `Pagar ${formatPrice(subtotal)} con Wompi`}
               </button>

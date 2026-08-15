@@ -1,24 +1,29 @@
 export default function HeroVideo() {
   return (
-    <section className="relative aspect-video w-full overflow-hidden bg-slate-950 sm:aspect-[16/6]">
+    <section className="relative aspect-video w-full overflow-hidden bg-gray-100 sm:aspect-[16/6]">
       <video
-        className="h-full w-full object-cover opacity-80"
+        className="h-full w-full object-cover"
         autoPlay
         muted
         loop
         playsInline
-        poster="/hero-poster.jpg"
+        poster="/categorias/basket.jpg"
       >
-        <source src="/hero-video.mp4" type="video/mp4" />
+        <source src="/hero.mp4" type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/30 to-slate-950/85" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-black/45" />
       <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center text-white">
-        <h1 className="text-3xl font-extrabold uppercase tracking-tight sm:text-5xl">
-          Ystren <span className="text-blue-400">Shoes</span>
-        </h1>
-        <p className="mt-2 max-w-xl text-sm text-blue-100 sm:text-lg">
-          Calzado deportivo para basketball, futbol, hombre y mujer.
-        </p>
+        <div className="animate-hero-fade">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-blue-200 sm:text-sm">
+            Ystren Shoes
+          </p>
+          <h1 className="mt-3 text-4xl font-black uppercase tracking-tight sm:text-6xl">
+            Calzado deportivo
+          </h1>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-gray-100 sm:text-lg">
+            Para basketball, futbol, hombre y mujer.
+          </p>
+        </div>
       </div>
     </section>
   );

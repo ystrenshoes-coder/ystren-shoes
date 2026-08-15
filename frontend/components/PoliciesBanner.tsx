@@ -2,14 +2,18 @@ import Link from "next/link";
 
 export default function PoliciesBanner() {
   return (
-    <Link
-      href="/politicas"
-      className="block bg-gradient-to-r from-slate-950 via-blue-800 to-slate-950 py-6 text-center text-white transition hover:via-blue-700"
-    >
-      <p className="text-lg font-semibold">
-        Conoce nuestras politicas de cambios, envios y garantia
-      </p>
-      <p className="text-sm underline">Ver politicas</p>
-    </Link>
+    <section className="border-y border-gray-200 bg-white">
+      <Link
+        href="/politicas"
+        className="group mx-auto flex max-w-7xl flex-col items-center justify-center gap-1 px-4 py-10 text-center"
+      >
+        <p className="text-xl font-black uppercase tracking-tight text-gray-900 transition group-hover:text-blue-700 sm:text-2xl">
+          Conoce nuestras politicas de cambios, envios y garantia
+        </p>
+        <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-blue-600">
+          Ver politicas <span className="inline-block transition group-hover:translate-x-1">→</span>
+        </p>
+      </Link>
+    </section>
   );
 }

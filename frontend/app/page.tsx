@@ -1,6 +1,5 @@
 import HeroVideo from "@/components/HeroVideo";
 import ProductsCarousel from "@/components/ProductsCarousel";
-import Marquee from "@/components/Marquee";
 import CategoryCards from "@/components/CategoryCards";
 import BrandsStrip from "@/components/BrandsStrip";
 import PoliciesBanner from "@/components/PoliciesBanner";
@@ -19,9 +18,6 @@ export default async function Home() {
     <>
       <HeroVideo />
       <ProductsCarousel title="Productos populares" products={popular} />
-      <div className="bg-blue-50 py-3 text-sm font-semibold text-blue-700">
-        <Marquee text="Envios a nivel nacional | Pago seguro con Wompi | Cambios sin complicaciones" />
-      </div>
       <CategoryCards categories={categories} />
       <BrandsStrip brands={brands} />
       <ProductsCarousel title="Nuevo" products={newArrivals} />

@@ -16,9 +16,9 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
         aria-label="Abrir menu"
         className="flex h-10 w-10 flex-col items-center justify-center gap-1.5"
       >
-        <span className="h-0.5 w-6 bg-white" />
-        <span className="h-0.5 w-6 bg-white" />
-        <span className="h-0.5 w-6 bg-white" />
+        <span className="h-0.5 w-6 rounded bg-gray-900" />
+        <span className="h-0.5 w-6 rounded bg-gray-900" />
+        <span className="h-0.5 w-6 rounded bg-gray-900" />
       </button>
 
       <div
@@ -27,12 +27,12 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
         }`}
       >
         <div
-          className="absolute inset-0 bg-black/60"
+          className="absolute inset-0 bg-black/40"
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
         <nav
-          className={`absolute left-0 top-0 flex h-full w-72 flex-col bg-slate-950 p-6 shadow-2xl transition-transform duration-300 ${
+          className={`absolute left-0 top-0 flex h-full w-72 flex-col bg-white p-6 shadow-2xl transition-transform duration-300 ${
             open ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -42,12 +42,12 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Cerrar menu"
-              className="text-2xl text-blue-200 hover:text-white"
+              className="text-2xl text-gray-400 transition hover:text-gray-900"
             >
               &times;
             </button>
           </div>
-          <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-blue-400">
+          <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-blue-600">
             Productos
           </p>
           <ul className="mt-3 flex flex-col gap-4">
@@ -55,7 +55,7 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
               <Link
                 href="/productos"
                 onClick={() => setOpen(false)}
-                className="text-base font-semibold text-white hover:text-blue-400"
+                className="text-base font-semibold text-gray-900 transition hover:text-blue-600"
               >
                 Todos los productos
               </Link>
@@ -65,7 +65,7 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
                 <Link
                   href={`/productos?category=${category.slug}`}
                   onClick={() => setOpen(false)}
-                  className="text-base text-blue-100 hover:text-blue-400"
+                  className="text-base text-gray-600 transition hover:text-blue-600"
                 >
                   {category.name}
                 </Link>
