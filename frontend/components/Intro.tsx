@@ -4,19 +4,19 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function Intro() {
-  const [hidden, setHidden] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return sessionStorage.getItem("ystrenIntroShown") === "true";
-  });
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    if (hidden) return;
+    if (sessionStorage.getItem("ystrenIntroShown") === "true") {
+      setHidden(true);
+      return;
+    }
     const timer = setTimeout(() => {
       setHidden(true);
       sessionStorage.setItem("ystrenIntroShown", "true");
     }, 1600);
     return () => clearTimeout(timer);
-  }, [hidden]);
+  }, []);
 
   return (
     <div className={`intro-screen ${hidden ? "intro-screen--hidden" : ""}`} aria-hidden>

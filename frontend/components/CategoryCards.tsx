@@ -6,7 +6,7 @@ import type { Category } from "@/lib/api";
 const LOCAL_IMAGES: Record<string, string> = {
   basketball: "/categorias/basket.jpg",
   guayos: "/categorias/guayos.jpg",
-  hombre: "/categorias/hombre.jpg",
+  hombre: "/categorias/hombre.png",
   mujer: "/categorias/mujer.jpg",
 };
 
@@ -33,12 +33,12 @@ export default function CategoryCards({ categories }: { categories: Category[] }
                   alt={category.name}
                   fill
                   sizes="(min-width: 640px) 25vw, 50vw"
-                  className="object-cover transition duration-700 ease-out group-hover:scale-105"
+                    className="object-contain transition duration-700 ease-out group-hover:scale-105"
                 />
               ) : null}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent transition group-hover:from-black/80" />
               <div className="absolute inset-x-0 bottom-0 p-4">
-                <span className="text-lg font-bold uppercase tracking-wide text-white sm:text-xl">
+                <span className="block break-words text-base font-bold uppercase leading-tight tracking-normal text-white sm:text-lg">
                   {category.name}
                 </span>
               </div>
