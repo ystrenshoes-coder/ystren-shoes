@@ -152,6 +152,12 @@ html.js .reveal.is-visible {
   animation: intro-fade 0.8s ease both;
 }
 
+.intro-brand--long {
+  font-size: 1.15rem;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
 .intro-sub {
   font-size: 0.75rem;
   font-weight: 600;

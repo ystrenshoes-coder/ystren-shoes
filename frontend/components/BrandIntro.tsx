@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 
 export default function BrandIntro({
   brandName,
-  logoUrl,
+  brandImage,
 }: {
   brandName: string;
-  logoUrl?: string | null;
+  brandImage?: string;
 }) {
   const [hidden, setHidden] = useState(false);
   const [logoError, setLogoError] = useState(false);
@@ -21,10 +21,10 @@ export default function BrandIntro({
   return (
     <div className={`intro-screen ${hidden ? "intro-screen--hidden" : ""}`} aria-hidden>
       <div className="intro-content">
-        {logoUrl && !logoError ? (
+        {brandImage && !logoError ? (
           <div className="intro-logo intro-logo--brand">
             <Image
-              src={logoUrl}
+              src={brandImage}
               alt=""
               fill
               sizes="120px"
@@ -33,7 +33,9 @@ export default function BrandIntro({
             />
           </div>
         ) : null}
-        <span className="intro-brand">{brandName}</span>
+        <span className={`intro-brand${brandName.length > 10 ? " intro-brand--long" : ""}`}>
+          {brandName}
+        </span>
         <span className="intro-sub">Coleccion</span>
       </div>
     </div>

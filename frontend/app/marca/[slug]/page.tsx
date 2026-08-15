@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import BrandIntro from "@/components/BrandIntro";
 import ProductCard from "@/components/ProductCard";
 import { getBrands, getProducts } from "@/lib/api";
+import { getBrandItem } from "@/lib/brands";
 
 export async function generateMetadata({
   params,
@@ -10,8 +11,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const brands = await getBrands().catch(() => []);
-  const brand = brands.find((b) => b.slug === slug);
+  const item = getBrandItem(slug);
+  const brand = item ?? (await getBrands().catch(() => [])).find((b) => b.slug === slug);
   return { title: brand ? `${brand.name} | Ystren Shoes` : "Marca no encontrada | Ystren Shoes" };
 }
 
@@ -22,19 +23,21 @@ export default async function MarcaPage({
 }) {
   const { slug } = await params;
 
+  const item = getBrandItem(slug);
+
   const [brands, products] = await Promise.all([
-    getBrands().catch(() => []),
+    item ? Promise.resolve([]) : getBrands().catch(() => []),
     getProducts({ brand: slug }).catch(() => []),
   ]);
 
-  const brand = brands.find((b) => b.slug === slug);
+  const brand = item ?? brands.find((b) => b.slug === slug);
   if (!brand) {
     notFound();
   }
 
   return (
     <>
-      <BrandIntro brandName={brand.name} logoUrl={brand.logo_url} />
+      <BrandIntro brandName={brand.name} brandImage={item?.image} />
       <section className="mx-auto max-w-7xl px-4 py-10">
         <div className="border-b border-gray-100 pb-5">
           <h1 className="text-3xl font-black uppercase tracking-tight text-gray-900">
