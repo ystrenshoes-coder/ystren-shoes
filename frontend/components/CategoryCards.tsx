@@ -6,7 +6,7 @@ import type { Category } from "@/lib/api";
 const LOCAL_IMAGES: Record<string, string> = {
   basketball: "/categorias/basket.jpg",
   guayos: "/categorias/guayos.jpg",
-  hombre: "/categorias/hombre.png",
+  hombre: "/categorias/hombre.jpg",
   mujer: "/categorias/mujer.jpg",
 };
 
