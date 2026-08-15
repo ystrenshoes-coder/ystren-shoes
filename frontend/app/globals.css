@@ -134,6 +134,15 @@ html.js .reveal.is-visible {
   animation: intro-pulse 2s ease-in-out infinite;
 }
 
+.intro-logo--brand {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 12px 44px rgba(96, 165, 250, 0.35);
+}
+
 .intro-brand {
   font-size: 1.6rem;
   font-weight: 900;

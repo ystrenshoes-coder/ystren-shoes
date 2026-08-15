@@ -31,7 +31,7 @@ export default function BrandsStrip({ brands = [] }: { brands?: Brand[] }) {
             return (
               <Link
                 key={`${src}-${index}`}
-                href={brand ? `/productos?brand=${brand.slug}` : "/productos"}
+                href={brand ? `/marca/${brand.slug}` : "/productos"}
                 className="mx-3"
               >
                 <div className="group relative flex h-20 w-44 items-center justify-center overflow-hidden rounded-2xl bg-slate-950 p-3 shadow-lg shadow-slate-900/25 ring-1 ring-slate-700/40 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-slate-500/60">
