@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from app.database import supabase
 from app.schemas import Brand, Category, Product
@@ -48,6 +49,59 @@ PRODUCT_SELECT = (
     " images:product_images(image_url, sort_order),"
     " sizes:product_sizes(size, stock)"
 )
+
+
+class ProductCreate(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    category_id: int | None = None
+    brand_id: int | None = None
+    is_popular: bool = False
+    is_new: bool = False
+    images: list[str] = []
+    sizes: list[dict] = []
+
+
+@app.post("/products", status_code=201)
+def create_product(payload: ProductCreate):
+    result = (
+        supabase.table("products")
+        .insert(
+            {
+                "name": payload.name,
+                "description": payload.description,
+                "price": payload.price,
+                "category_id": payload.category_id,
+                "brand_id": payload.brand_id,
+                "is_popular": payload.is_popular,
+                "is_new": payload.is_new,
+            }
+        )
+        .select()
+        .single()
+        .execute()
+    )
+    product_id = result.data["id"]
+
+    if payload.images:
+        supabase.table("product_images").insert(
+            [
+                {"product_id": product_id, "image_url": url, "sort_order": i}
+                for i, url in enumerate(payload.images)
+            ]
+        ).execute()
+
+    if payload.sizes:
+        supabase.table("product_sizes").insert(
+            [
+                {"product_id": product_id, "size": s["size"], "stock": s["stock"]}
+                for s in payload.sizes
+                if s.get("stock", 0) > 0
+            ]
+        ).execute()
+
+    return {"id": product_id, "status": "created"}
 
 
 @app.get("/products", response_model=list[Product])
