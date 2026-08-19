@@ -29,7 +29,6 @@ export default function ProductsCarousel({
         <div className="mb-6 flex items-end justify-between gap-4">
           <h2 className="text-2xl font-black uppercase tracking-tight text-gray-900 sm:text-3xl">
             {title}
-            <span className="text-blue-600">.</span>
           </h2>
           <Link
             href="/productos"

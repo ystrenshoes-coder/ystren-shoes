@@ -14,6 +14,10 @@ export default async function Home() {
     getProducts({ isNew: true }).catch(() => []),
   ]);
 
+  const categoryProducts = await Promise.all(
+    categories.map((c) => getProducts({ category: c.slug }).catch(() => [])),
+  );
+
   return (
     <>
       <HeroVideo />
@@ -21,6 +25,13 @@ export default async function Home() {
       <CategoryCards categories={categories} />
       <BrandsStrip brands={brands} />
       <ProductsCarousel title="Nuevo" products={newArrivals} />
+      {categories.map((category, i) => (
+        <ProductsCarousel
+          key={category.id}
+          title={category.name}
+          products={categoryProducts[i]}
+        />
+      ))}
       <PoliciesBanner />
       <PaymentMethods />
     </>

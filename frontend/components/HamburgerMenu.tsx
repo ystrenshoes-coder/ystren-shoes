@@ -74,7 +74,7 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
                 <Link
                   href={`/productos?category=${category.slug}`}
                   onClick={() => setOpen(false)}
-                  className="text-base text-gray-600 transition hover:text-blue-600"
+                  className="text-base font-semibold text-gray-600 transition hover:text-blue-600"
                 >
                   {category.name}
                 </Link>
