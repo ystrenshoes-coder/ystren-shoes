@@ -48,9 +48,18 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
             </button>
           </div>
           <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-blue-600">
-            Productos
+            Navegacion
           </p>
           <ul className="mt-3 flex flex-col gap-4">
+            <li>
+              <Link
+                href="/"
+                onClick={() => setOpen(false)}
+                className="text-base font-semibold text-gray-900 transition hover:text-blue-600"
+              >
+                Inicio
+              </Link>
+            </li>
             <li>
               <Link
                 href="/productos"

@@ -27,7 +27,7 @@ export default async function Header() {
       </div>
 
       <HeaderScrolled>
-        <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur-md">
+        <header className="sticky top-0 z-40 border-b border-gray-200 bg-white">
           <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3">
             <div className="flex items-center justify-start">
               <HamburgerMenu categories={categories} />
