@@ -4,7 +4,8 @@ import HeaderSearch from "@/components/HeaderSearch";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Marquee from "@/components/Marquee";
 import HeaderScrolled from "@/components/HeaderScrolled";
-import { getCategories, getSettings } from "@/lib/api";
+import { getCategories } from "@/lib/api";
+import { getSettingsFromDB } from "@/lib/settings";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
@@ -12,7 +13,7 @@ export default async function Header() {
   const [categories, supabase, settings] = await Promise.all([
     getCategories().catch(() => []),
     createClient(),
-    getSettings().catch(() => []),
+    getSettingsFromDB().catch(() => []),
   ]);
   const { data } = await supabase.auth.getUser();
 

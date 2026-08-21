@@ -4,7 +4,8 @@ import CategoryCards from "@/components/CategoryCards";
 import BrandsStrip from "@/components/BrandsStrip";
 import PoliciesBanner from "@/components/PoliciesBanner";
 import PaymentMethods from "@/components/PaymentMethods";
-import { getBrands, getCategories, getProducts, getSettings } from "@/lib/api";
+import { getBrands, getCategories, getProducts } from "@/lib/api";
+import { getSettingsFromDB } from "@/lib/settings";
 
 export default async function Home() {
   const [popular, categories, brands, newArrivals, settings] = await Promise.all([
@@ -12,7 +13,7 @@ export default async function Home() {
     getCategories().catch(() => []),
     getBrands().catch(() => []),
     getProducts({ isNew: true }).catch(() => []),
-    getSettings().catch(() => []),
+    getSettingsFromDB().catch(() => []),
   ]);
 
   const s = Object.fromEntries(settings.map((item) => [item.key, item.value]));
