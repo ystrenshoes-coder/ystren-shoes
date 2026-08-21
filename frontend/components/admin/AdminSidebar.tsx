@@ -5,10 +5,24 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function AdminSidebar() {
+const allNavItems = [
+  { href: "/admin", label: "Dashboard", adminOnly: false },
+  { href: "/admin/dinero", label: "Mi dinero", adminOnly: true },
+  { href: "/admin/productos", label: "Productos", adminOnly: false },
+  { href: "/admin/categorias", label: "Categorias", adminOnly: false },
+  { href: "/admin/marcas", label: "Marcas", adminOnly: false },
+  { href: "/admin/pedidos", label: "Pedidos", adminOnly: false },
+  { href: "/admin/usuarios", label: "Usuarios", adminOnly: true },
+  { href: "/admin/configuracion", label: "Configuracion", adminOnly: false },
+];
+
+export default function AdminSidebar({ role }: { role: string }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  const isAdmin = role === "admin";
+  const navItems = allNavItems.filter((item) => !item.adminOnly || isAdmin);
 
   async function handleLogout() {
     if (!confirm("Estas seguro de cerrar la sesion?")) return;
@@ -17,16 +31,6 @@ export default function AdminSidebar() {
     router.push("/admin/login");
     router.refresh();
   }
-
-  const navItems = [
-    { href: "/admin", label: "Dashboard" },
-    { href: "/admin/productos", label: "Productos" },
-    { href: "/admin/categorias", label: "Categorias" },
-    { href: "/admin/marcas", label: "Marcas" },
-    { href: "/admin/pedidos", label: "Pedidos" },
-    { href: "/admin/usuarios", label: "Usuarios" },
-    { href: "/admin/configuracion", label: "Configuracion" },
-  ];
 
   return (
     <>

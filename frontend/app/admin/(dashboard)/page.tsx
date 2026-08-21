@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getBrands, getCategories, getProducts } from "@/lib/api";
 import { createClient } from "@/lib/supabase/server";
+import SalesSummary from "@/components/admin/SalesSummary";
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -14,12 +15,16 @@ export default async function AdminDashboardPage() {
       .eq("status", "pending"),
   ]);
 
+  const { data: { user } } = await supabase.auth.getUser();
+  const role = user?.app_metadata?.role ?? user?.user_metadata?.role ?? "staff";
+  const isAdmin = role === "admin";
+
   const cards = [
     { label: "Productos publicados", value: products.length, href: "/admin/productos" },
     { label: "Categorias", value: categories.length, href: "/admin/categorias" },
     { label: "Marcas", value: brands.length, href: "/admin/marcas" },
     { label: "Pedidos pendientes", value: pendingOrders ?? 0, href: "/admin/pedidos" },
-    { label: "Configuracion del sitio", value: "Ver", href: "/admin/configuracion" },
+    ...(isAdmin ? [{ label: "Configuracion del sitio", value: "Ver", href: "/admin/configuracion" }] : []),
   ];
 
   return (
@@ -39,6 +44,12 @@ export default async function AdminDashboardPage() {
           </Link>
         ))}
       </div>
+
+      {isAdmin ? (
+        <div className="mt-6">
+          <SalesSummary />
+        </div>
+      ) : null}
     </div>
   );
 }
