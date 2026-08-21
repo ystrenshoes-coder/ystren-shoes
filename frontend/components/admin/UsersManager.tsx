@@ -112,6 +112,7 @@ export default function UsersManager() {
                 className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm"
               >
                 <option value="admin">Administrador</option>
+                <option value="colaborador">Colaborador</option>
                 <option value="staff">Staff</option>
               </select>
             </div>
@@ -160,6 +161,7 @@ export default function UsersManager() {
                       className="rounded-lg border border-gray-300 px-3 py-1 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <option value="admin">Admin</option>
+                      <option value="colaborador">Colaborador</option>
                       <option value="staff">Staff</option>
                     </select>
                   </td>
