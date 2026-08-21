@@ -8,9 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 const allNavItems = [
   { href: "/admin", label: "Dashboard", adminOnly: false },
   { href: "/admin/dinero", label: "Mi dinero", adminOnly: true },
-  { href: "/admin/productos", label: "Productos", adminOnly: false },
-  { href: "/admin/categorias", label: "Categorias", adminOnly: false },
-  { href: "/admin/marcas", label: "Marcas", adminOnly: false },
+  { href: "/admin/inventario", label: "Inventario", adminOnly: false },
   { href: "/admin/pedidos", label: "Pedidos", adminOnly: false },
   { href: "/admin/usuarios", label: "Usuarios", adminOnly: true },
   { href: "/admin/configuracion", label: "Configuracion", adminOnly: false },

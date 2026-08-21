@@ -20,9 +20,9 @@ export default async function AdminDashboardPage() {
   const isAdmin = role === "admin";
 
   const cards = [
-    { label: "Productos publicados", value: products.length, href: "/admin/productos" },
-    { label: "Categorias", value: categories.length, href: "/admin/categorias" },
-    { label: "Marcas", value: brands.length, href: "/admin/marcas" },
+    { label: "Productos", value: products.length, href: "/admin/inventario" },
+    { label: "Categorias", value: categories.length, href: "/admin/inventario" },
+    { label: "Marcas", value: brands.length, href: "/admin/inventario" },
     { label: "Pedidos pendientes", value: pendingOrders ?? 0, href: "/admin/pedidos" },
     ...(isAdmin ? [{ label: "Configuracion del sitio", value: "Ver", href: "/admin/configuracion" }] : []),
   ];

@@ -1,8 +1,5 @@
-import { getProducts } from "@/lib/api";
-import ProductsTable from "@/components/admin/ProductsTable";
+import { redirect } from "next/navigation";
 
-export default async function AdminProductosPage() {
-  const products = await getProducts().catch(() => []);
-
-  return <ProductsTable products={products} />;
+export default function AdminProductosPage() {
+  redirect("/admin/inventario");
 }
