@@ -24,6 +24,7 @@ export default function AdminSidebar() {
     { href: "/admin/categorias", label: "Categorias" },
     { href: "/admin/marcas", label: "Marcas" },
     { href: "/admin/pedidos", label: "Pedidos" },
+    { href: "/admin/usuarios", label: "Usuarios" },
     { href: "/admin/configuracion", label: "Configuracion" },
   ];
 

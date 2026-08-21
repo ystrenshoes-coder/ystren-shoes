@@ -68,3 +68,13 @@ class Order(BaseModel):
 
 class OrderStatusUpdate(BaseModel):
     status: str
+
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+    role: str = "staff"
+
+
+class UserUpdate(BaseModel):
+    role: str | None = None

@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from app.database import supabase
+from app.database import supabase, supabase_admin
 from app.schemas import (
     Brand,
     Category,
@@ -15,6 +15,8 @@ from app.schemas import (
     Product,
     SiteSetting,
     SiteSettingUpdate,
+    UserCreate,
+    UserUpdate,
 )
 
 load_dotenv()
@@ -249,3 +251,57 @@ def update_order_status(order_id: int, payload: OrderStatusUpdate):
         "id", order_id
     ).execute()
     return {"status": "updated", "order_id": order_id, "new_status": payload.status}
+
+
+@app.get("/users")
+def list_users():
+    result = supabase_admin.auth.admin.list_users()
+    users = []
+    for u in result:
+        role = "staff"
+        if u.app_metadata and u.app_metadata.get("role"):
+            role = u.app_metadata["role"]
+        elif u.user_metadata and u.user_metadata.get("role"):
+            role = u.user_metadata["role"]
+        users.append(
+            {
+                "id": u.id,
+                "email": u.email,
+                "role": role,
+                "created_at": str(u.created_at) if u.created_at else None,
+                "last_sign_in_at": str(u.last_sign_in_at) if u.last_sign_in_at else None,
+            }
+        )
+    return users
+
+
+@app.post("/users", status_code=201)
+def create_user(payload: UserCreate):
+    result = supabase_admin.auth.admin.create_user(
+        {
+            "email": payload.email,
+            "password": payload.password,
+            "app_metadata": {"role": payload.role},
+            "user_metadata": {"role": payload.role},
+        }
+    )
+    return {"id": result.id, "email": result.email, "status": "created"}
+
+
+@app.put("/users/{user_id}/role")
+def update_user_role(user_id: str, payload: UserUpdate):
+    if payload.role:
+        supabase_admin.auth.admin.update_user_by_id(
+            user_id,
+            {
+                "app_metadata": {"role": payload.role},
+                "user_metadata": {"role": payload.role},
+            },
+        )
+    return {"status": "updated", "user_id": user_id}
+
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: str):
+    supabase_admin.auth.admin.delete_user(user_id)
+    return {"status": "deleted", "user_id": user_id}

@@ -164,3 +164,52 @@ export async function updateOrderStatus(
   });
   if (!res.ok) throw new Error("No se pudo actualizar el estado");
 }
+
+export type AdminUser = {
+  id: string;
+  email: string;
+  role: string;
+  created_at: string | null;
+  last_sign_in_at: string | null;
+};
+
+export async function getUsers(): Promise<AdminUser[]> {
+  const res = await fetch(new URL("/users", API_URL), { cache: "no-store" });
+  if (!res.ok) throw new Error("No se pudieron cargar los usuarios");
+  return res.json();
+}
+
+export async function createUser(
+  email: string,
+  password: string,
+  role: string,
+): Promise<void> {
+  const res = await fetch(new URL("/users", API_URL), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, role }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "No se pudo crear el usuario");
+  }
+}
+
+export async function updateUserRole(
+  userId: string,
+  role: string,
+): Promise<void> {
+  const res = await fetch(new URL(`/users/${userId}/role`, API_URL), {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ role }),
+  });
+  if (!res.ok) throw new Error("No se pudo actualizar el rol");
+}
+
+export async function deleteUser(userId: string): Promise<void> {
+  const res = await fetch(new URL(`/users/${userId}`, API_URL), {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("No se pudo eliminar el usuario");
+}
