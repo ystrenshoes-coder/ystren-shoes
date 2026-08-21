@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getUsers, createUser, updateUserRole, deleteUser } from "@/lib/api";
 import type { AdminUser } from "@/lib/api";
 
+const LOCKED_EMAIL = "santiagoallinarboleda16@gmail.com";
 
 export default function UsersManager() {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -11,7 +12,7 @@ export default function UsersManager() {
   const [showForm, setShowForm] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("staff");
+  const [role, setRole] = useState("admin");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -33,7 +34,7 @@ export default function UsersManager() {
       await createUser(email, password, role);
       setEmail("");
       setPassword("");
-      setRole("staff");
+      setRole("admin");
       setShowForm(false);
       load();
     } catch (err: unknown) {
@@ -110,8 +111,8 @@ export default function UsersManager() {
                 onChange={(e) => setRole(e.target.value)}
                 className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm"
               >
-                <option value="staff">Staff</option>
                 <option value="admin">Administrador</option>
+                <option value="staff">Staff</option>
               </select>
             </div>
             {error ? <p className="text-sm text-red-600">{error}</p> : null}
@@ -143,17 +144,23 @@ export default function UsersManager() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {users.map((user) => (
+              {users.map((user) => {
+                const locked = user.email === LOCKED_EMAIL;
+                return (
                 <tr key={user.id}>
-                  <td className="px-4 py-3 font-medium text-gray-900">{user.email}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    {user.email}
+                    {locked ? <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Principal</span> : null}
+                  </td>
                   <td className="px-4 py-3">
                     <select
                       value={user.role}
                       onChange={(e) => handleChangeRole(user.id, e.target.value)}
-                      className="rounded-lg border border-gray-300 px-3 py-1 text-xs font-semibold"
+                      disabled={locked}
+                      className="rounded-lg border border-gray-300 px-3 py-1 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <option value="staff">Staff</option>
                       <option value="admin">Admin</option>
+                      <option value="staff">Staff</option>
                     </select>
                   </td>
                   <td className="px-4 py-3 text-gray-500">
@@ -165,6 +172,9 @@ export default function UsersManager() {
                       : "Nunca"}
                   </td>
                   <td className="px-4 py-3">
+                    {locked ? (
+                      <span className="text-xs text-gray-400">-</span>
+                    ) : (
                     <button
                       type="button"
                       onClick={() => handleDelete(user.id, user.email ?? "")}
@@ -172,9 +182,11 @@ export default function UsersManager() {
                     >
                       Eliminar
                     </button>
+                    )}
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
