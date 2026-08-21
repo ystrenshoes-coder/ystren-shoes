@@ -7,7 +7,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("site_settings")
     .select("*")
-    .order("id");
+    .order("key");
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

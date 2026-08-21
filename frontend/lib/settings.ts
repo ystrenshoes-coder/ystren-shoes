@@ -6,7 +6,7 @@ export async function getSettingsFromDB(): Promise<SiteSetting[]> {
   const { data, error } = await supabase
     .from("site_settings")
     .select("*")
-    .order("id");
+    .order("key");
 
   if (error || !data) return [];
 

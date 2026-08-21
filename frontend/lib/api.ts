@@ -174,7 +174,7 @@ export type AdminUser = {
 };
 
 export async function getUsers(): Promise<AdminUser[]> {
-  const res = await fetch(new URL("/users", API_URL), { cache: "no-store" });
+  const res = await fetch("/api/users", { cache: "no-store" });
   if (!res.ok) throw new Error("No se pudieron cargar los usuarios");
   return res.json();
 }
@@ -184,14 +184,14 @@ export async function createUser(
   password: string,
   role: string,
 ): Promise<void> {
-  const res = await fetch(new URL("/users", API_URL), {
+  const res = await fetch("/api/users", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password, role }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || "No se pudo crear el usuario");
+    throw new Error(err.error || "No se pudo crear el usuario");
   }
 }
 
@@ -199,7 +199,7 @@ export async function updateUserRole(
   userId: string,
   role: string,
 ): Promise<void> {
-  const res = await fetch(new URL(`/users/${userId}/role`, API_URL), {
+  const res = await fetch(`/api/users/${userId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ role }),
@@ -208,8 +208,6 @@ export async function updateUserRole(
 }
 
 export async function deleteUser(userId: string): Promise<void> {
-  const res = await fetch(new URL(`/users/${userId}`, API_URL), {
-    method: "DELETE",
-  });
+  const res = await fetch(`/api/users/${userId}`, { method: "DELETE" });
   if (!res.ok) throw new Error("No se pudo eliminar el usuario");
 }
