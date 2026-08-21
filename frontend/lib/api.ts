@@ -76,3 +76,91 @@ export async function getBrands(): Promise<Brand[]> {
   if (!res.ok) throw new Error("No se pudieron cargar las marcas");
   return res.json();
 }
+
+export type SiteSetting = {
+  key: string;
+  value: Record<string, unknown>;
+  updated_at?: string | null;
+};
+
+export async function getSettings(): Promise<SiteSetting[]> {
+  const res = await fetch(new URL("/settings", API_URL), { cache: "no-store" });
+  if (!res.ok) throw new Error("No se pudieron cargar las configuraciones");
+  return res.json();
+}
+
+export async function getSetting(key: string): Promise<SiteSetting> {
+  const res = await fetch(new URL(`/settings/${key}`, API_URL), {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("Setting no encontrada");
+  return res.json();
+}
+
+export async function updateSetting(
+  key: string,
+  value: Record<string, unknown>,
+): Promise<void> {
+  const res = await fetch(new URL(`/settings/${key}`, API_URL), {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ value }),
+  });
+  if (!res.ok) throw new Error("No se pudo guardar la configuracion");
+}
+
+export type OrderItem = {
+  id: number;
+  product_name: string | null;
+  size: string | null;
+  quantity: number;
+  unit_price: number;
+};
+
+export type Order = {
+  id: number;
+  customer_name: string | null;
+  customer_email: string | null;
+  customer_phone: string | null;
+  customer_id_number: string | null;
+  shipping_address: string | null;
+  shipping_city: string | null;
+  status: string;
+  subtotal: number;
+  wompi_reference: string | null;
+  created_at: string | null;
+  items: OrderItem[];
+};
+
+export async function getOrders(filters?: {
+  status?: string;
+  search?: string;
+}): Promise<Order[]> {
+  const url = new URL("/orders", API_URL);
+  if (filters?.status) url.searchParams.set("status", filters.status);
+  if (filters?.search) url.searchParams.set("search", filters.search);
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error("No se pudieron cargar los pedidos");
+  return res.json();
+}
+
+export async function getOrder(id: string): Promise<Order | null> {
+  const res = await fetch(new URL(`/orders/${id}`, API_URL), {
+    cache: "no-store",
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("No se pudo cargar el pedido");
+  return res.json();
+}
+
+export async function updateOrderStatus(
+  id: number,
+  status: string,
+): Promise<void> {
+  const res = await fetch(new URL(`/orders/${id}/status`, API_URL), {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) throw new Error("No se pudo actualizar el estado");
+}

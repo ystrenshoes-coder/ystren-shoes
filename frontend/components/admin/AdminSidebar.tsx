@@ -24,6 +24,7 @@ export default function AdminSidebar() {
     { href: "/admin/categorias", label: "Categorias" },
     { href: "/admin/marcas", label: "Marcas" },
     { href: "/admin/pedidos", label: "Pedidos" },
+    { href: "/admin/configuracion", label: "Configuracion" },
   ];
 
   return (
@@ -60,9 +61,13 @@ export default function AdminSidebar() {
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className={`rounded-md px-3 py-2 text-sm font-medium ${
-                  pathname === item.href
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-gray-700 hover:bg-gray-100"
+                  item.href === "/admin"
+                    ? pathname === "/admin"
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-700 hover:bg-gray-100"
+                    : pathname.startsWith(item.href)
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 {item.label}

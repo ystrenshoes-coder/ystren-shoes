@@ -4,25 +4,28 @@ import HeaderSearch from "@/components/HeaderSearch";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Marquee from "@/components/Marquee";
 import HeaderScrolled from "@/components/HeaderScrolled";
-import { getCategories } from "@/lib/api";
+import { getCategories, getSettings } from "@/lib/api";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
-const ANNOUNCEMENT_TEXT =
-  "Envios a nivel nacional | Pago seguro con Wompi | Cambios sin complicaciones";
-
 export default async function Header() {
-  const [categories, supabase] = await Promise.all([
+  const [categories, supabase, settings] = await Promise.all([
     getCategories().catch(() => []),
     createClient(),
+    getSettings().catch(() => []),
   ]);
   const { data } = await supabase.auth.getUser();
+
+  const announcementSetting = settings.find((s) => s.key === "announcement_text");
+  const announcementText =
+    (announcementSetting?.value?.text as string) ||
+    "Envios a nivel nacional | Pago seguro con Wompi | Cambios sin complicaciones";
 
   return (
     <>
       <div className="bg-slate-950 text-white">
         <div className="mx-auto max-w-7xl">
-          <Marquee text={ANNOUNCEMENT_TEXT} />
+          <Marquee text={announcementText} />
         </div>
       </div>
 

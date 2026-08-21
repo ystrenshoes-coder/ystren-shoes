@@ -6,7 +6,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.database import supabase
-from app.schemas import Brand, Category, Product
+from app.schemas import (
+    Brand,
+    Category,
+    Order,
+    OrderItem,
+    OrderStatusUpdate,
+    Product,
+    SiteSetting,
+    SiteSettingUpdate,
+)
 
 load_dotenv()
 
@@ -168,3 +177,75 @@ def list_brands():
         .execute()
     )
     return result.data
+
+
+@app.get("/settings", response_model=list[SiteSetting])
+def list_settings():
+    result = supabase.table("site_settings").select("*").execute()
+    return result.data
+
+
+@app.get("/settings/{key}", response_model=SiteSetting)
+def get_setting(key: str):
+    result = (
+        supabase.table("site_settings").select("*").eq("key", key).single().execute()
+    )
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Setting no encontrada")
+    return result.data
+
+
+@app.put("/settings/{key}")
+def update_setting(key: str, payload: SiteSettingUpdate):
+    result = (
+        supabase.table("site_settings")
+        .update({"value": payload.value, "updated_at": "now()"})
+        .eq("key", key)
+        .execute()
+    )
+    return {"status": "updated", "key": key}
+
+
+@app.get("/orders", response_model=list[Order])
+def list_orders(status: str | None = None, search: str | None = None):
+    result = (
+        supabase.table("orders")
+        .select("*, items:order_items(*)")
+        .order("created_at", desc=True)
+        .execute()
+    )
+    orders = result.data
+    if status:
+        orders = [o for o in orders if o.get("status") == status]
+    if search:
+        q = search.lower()
+        orders = [
+            o
+            for o in orders
+            if q in (o.get("customer_name") or "").lower()
+            or q in (o.get("customer_id_number") or "").lower()
+            or q in (o.get("customer_email") or "").lower()
+        ]
+    return orders
+
+
+@app.get("/orders/{order_id}", response_model=Order)
+def get_order(order_id: int):
+    result = (
+        supabase.table("orders")
+        .select("*, items:order_items(*)")
+        .eq("id", order_id)
+        .single()
+        .execute()
+    )
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Pedido no encontrado")
+    return result.data
+
+
+@app.put("/orders/{order_id}/status")
+def update_order_status(order_id: int, payload: OrderStatusUpdate):
+    supabase.table("orders").update({"status": payload.status}).eq(
+        "id", order_id
+    ).execute()
+    return {"status": "updated", "order_id": order_id, "new_status": payload.status}

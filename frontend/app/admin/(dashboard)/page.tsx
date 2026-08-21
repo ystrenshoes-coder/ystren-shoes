@@ -19,6 +19,7 @@ export default async function AdminDashboardPage() {
     { label: "Categorias", value: categories.length, href: "/admin/categorias" },
     { label: "Marcas", value: brands.length, href: "/admin/marcas" },
     { label: "Pedidos pendientes", value: pendingOrders ?? 0, href: "/admin/pedidos" },
+    { label: "Configuracion del sitio", value: "Ver", href: "/admin/configuracion" },
   ];
 
   return (
