@@ -6,6 +6,8 @@ import { useCart } from "@/lib/cart/CartContext";
 import { formatPrice } from "@/lib/formatPrice";
 import { COLOMBIA_CITIES } from "@/lib/colombiaCities";
 
+type PaymentMethod = "pse" | "card";
+
 export default function CarritoPage() {
   const { items, updateQuantity, removeItem, subtotal } = useCart();
   const [name, setName] = useState("");
@@ -14,6 +16,7 @@ export default function CarritoPage() {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pse");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +30,7 @@ export default function CarritoPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          paymentMethod,
           customer: { name, idNumber, email, phone, city, address },
           items: items.map((item) => ({
             productId: item.product.id,
@@ -219,12 +223,49 @@ export default function CarritoPage() {
 
               {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
+              <div>
+                <span className="text-xs font-medium text-gray-600">Metodo de pago</span>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("pse")}
+                    className={`flex flex-col items-center justify-center gap-1 rounded-xl border-2 px-3 py-3 text-sm font-semibold transition ${
+                      paymentMethod === "pse"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "border-gray-200 text-gray-500 hover:border-gray-300"
+                    }`}
+                  >
+                    <span className="text-lg">🏦</span>
+                    PSE
+                    <span className="text-[10px] font-normal text-gray-400">Pago bancario en linea</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("card")}
+                    className={`flex flex-col items-center justify-center gap-1 rounded-xl border-2 px-3 py-3 text-sm font-semibold transition ${
+                      paymentMethod === "card"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "border-gray-200 text-gray-500 hover:border-gray-300"
+                    }`}
+                  >
+                    <span className="text-lg">💳</span>
+                    Tarjeta
+                    <span className="text-[10px] font-normal text-gray-400">Credito / Debito</span>
+                  </button>
+                </div>
+              </div>
+
               <button
                 type="submit"
                 disabled={loading}
                 className="mt-2 flex items-center justify-center gap-2 rounded-full bg-blue-600 px-4 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:opacity-50"
               >
-                {loading ? "Redirigiendo a Wompi..." : `Pagar ${formatPrice(subtotal)} con Wompi`}
+                {loading
+                  ? "Redirigiendo a la pasarela..."
+                  : paymentMethod === "pse"
+                    ? `Pagar ${formatPrice(subtotal)} con PSE`
+                    : `Pagar ${formatPrice(subtotal)} con Tarjeta`}
               </button>
 
               <p className="text-center text-xs text-gray-400">

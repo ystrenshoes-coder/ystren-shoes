@@ -12,6 +12,7 @@ type CheckoutItem = {
 };
 
 type CheckoutBody = {
+  paymentMethod: "pse" | "card";
   customer: {
     name: string;
     idNumber?: string;
@@ -29,6 +30,8 @@ export async function POST(request: Request) {
   if (!body.customer?.name || !body.customer?.email || body.items.length === 0) {
     return NextResponse.json({ error: "Datos de pedido incompletos" }, { status: 400 });
   }
+
+  const paymentMethod = body.paymentMethod === "pse" ? "PSE" : "CARD";
 
   const subtotal = body.items.reduce(
     (sum, item) => sum + item.unitPrice * item.quantity,
@@ -91,6 +94,9 @@ export async function POST(request: Request) {
   checkoutUrl.searchParams.set("redirect-url", redirectUrl);
   checkoutUrl.searchParams.set("customer-data:email", body.customer.email);
   checkoutUrl.searchParams.set("customer-data:full-name", body.customer.name);
+  if (paymentMethod === "PSE") {
+    checkoutUrl.searchParams.set("payment-method", "PSE");
+  }
   if (body.customer.phone) {
     checkoutUrl.searchParams.set("customer-data:phone-number", body.customer.phone);
   }
