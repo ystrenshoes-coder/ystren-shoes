@@ -24,6 +24,8 @@ export default function BrandsStrip({ brands = [] }: { brands?: Brand[] }) {
         >
           {loop.map((item, index) => {
             const brand = brands.find((b) => b.slug === item.slug);
+            const displayName = brand?.name ?? item.name;
+            const displayImage = brand?.logo_url ?? item.image;
             return (
               <Link
                 key={`${item.slug}-${index}`}
@@ -32,11 +34,12 @@ export default function BrandsStrip({ brands = [] }: { brands?: Brand[] }) {
               >
                 <div className="group relative flex h-20 w-44 items-center justify-center overflow-hidden rounded-2xl bg-slate-950 p-3 shadow-lg shadow-slate-900/25 ring-1 ring-slate-700/40 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-slate-500/60">
                   <Image
-                    src={item.image}
-                    alt={brand?.name ?? item.name}
+                    src={displayImage}
+                    alt={displayName}
                     fill
                     sizes="176px"
                     className="object-contain transition duration-300 group-hover:scale-105"
+                    unoptimized
                   />
                 </div>
               </Link>

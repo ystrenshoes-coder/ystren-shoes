@@ -1,20 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { Brand } from "@/lib/api";
+import { BRAND_ITEMS } from "@/lib/brands";
 import IconButton from "@/components/admin/IconButton";
-
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 async function uploadLogo(file: File): Promise<string> {
   const supabase = createClient();
@@ -25,165 +16,125 @@ async function uploadLogo(file: File): Promise<string> {
   return data.publicUrl;
 }
 
-export default function BrandsManager({ brands }: { brands: Brand[] }) {
+export default function BrandsManager() {
   const router = useRouter();
-  const [newName, setNewName] = useState("");
-  const [newLogo, setNewLogo] = useState<File | null>(null);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editName, setEditName] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [renaming, setRenaming] = useState<{ slug: string; name: string } | null>(null);
 
-  async function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
-    if (!newName.trim()) return;
+  async function saveLogo(slug: string, name: string, file: File) {
     setError(null);
-    setLoading(true);
-
-    let logoUrl: string | null = null;
-    if (newLogo) {
-      try {
-        logoUrl = await uploadLogo(newLogo);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
-        setLoading(false);
-        return;
-      }
+    try {
+      const url = await uploadLogo(file);
+      const supabase = createClient();
+      await supabase.from("brands").upsert(
+        { slug, name, logo_url: url },
+        { onConflict: "slug" }
+      );
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error subiendo el logo");
     }
-
-    const supabase = createClient();
-    const { error: insertError } = await supabase.from("brands").insert({
-      name: newName.trim(),
-      slug: slugify(newName),
-      logo_url: logoUrl,
-      sort_order: brands.length,
-    });
-
-    setLoading(false);
-    if (insertError) {
-      setError("No se pudo crear la marca: " + insertError.message);
-      return;
-    }
-    setNewName("");
-    setNewLogo(null);
-    router.refresh();
   }
 
-  async function handleRename(id: number) {
-    if (!editName.trim()) {
-      setEditingId(null);
+  async function saveRename() {
+    if (!renaming || !renaming.name.trim()) {
+      setRenaming(null);
       return;
     }
+    setError(null);
     const supabase = createClient();
-    const { error: updateError } = await supabase
+    const { error: dbError } = await supabase
       .from("brands")
-      .update({ name: editName.trim(), slug: slugify(editName) })
-      .eq("id", id);
-
-    if (updateError) {
-      setError("No se pudo renombrar: " + updateError.message);
+      .update({ name: renaming.name.trim() })
+      .eq("slug", renaming.slug);
+    if (dbError) {
+      setError("No se pudo guardar: " + dbError.message);
       return;
     }
-    setEditingId(null);
-    router.refresh();
-  }
-
-  async function handleDelete(brand: Brand) {
-    if (!confirm(`Borrar la marca "${brand.name}"? Los productos que la usaban quedaran sin marca.`)) {
-      return;
-    }
-    const supabase = createClient();
-    const { error: deleteError } = await supabase.from("brands").delete().eq("id", brand.id);
-    if (deleteError) {
-      alert("No se pudo borrar: " + deleteError.message);
-      return;
-    }
+    setRenaming(null);
     router.refresh();
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white">
-      {error ? <p className="px-5 pt-4 text-sm text-red-600">{error}</p> : null}
+    <div>
+      <p className="mb-4 text-sm text-gray-500">
+        Estas son las marcas tal como aparecen en la franja &quot;Mejores marcas&quot; de la pagina
+        principal. Cambia el nombre o sube un logo nuevo para actualizar cada una.
+      </p>
 
-      <ul>
-        {brands.map((brand) => (
-          <li key={brand.id} className="flex items-center justify-between gap-3 border-b border-gray-50 px-5 py-3.5">
-            <div className="flex flex-1 items-center gap-3">
-              {brand.logo_url ? (
-                <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded bg-gray-100">
-                  <Image src={brand.logo_url} alt={brand.name} fill className="object-contain" />
-                </div>
-              ) : (
-                <div className="flex h-10 w-16 shrink-0 items-center justify-center rounded bg-blue-100 text-xs font-bold text-blue-600">
-                  {brand.name}
-                </div>
-              )}
+      {error ? (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          {error}
+        </div>
+      ) : null}
 
-              {editingId === brand.id ? (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {BRAND_ITEMS.map((item) => (
+          <div
+            key={item.slug}
+            className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4"
+          >
+            <div className="group relative flex h-20 w-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-950 p-3 shadow-lg shadow-slate-900/25 ring-1 ring-slate-700/40">
+              <Image
+                src={item.image}
+                alt={renaming?.slug === item.slug ? renaming.name : item.name}
+                fill
+                sizes="176px"
+                className="object-contain"
+              />
+            </div>
+
+            <div className="flex flex-1 flex-col gap-2">
+              {renaming?.slug === item.slug ? (
                 <input
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
+                  value={renaming.name}
+                  onChange={(e) => setRenaming({ slug: item.slug, name: e.target.value })}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") handleRename(brand.id);
-                    if (e.key === "Escape") setEditingId(null);
+                    if (e.key === "Enter") saveRename();
+                    if (e.key === "Escape") setRenaming(null);
                   }}
                   autoFocus
-                  className="flex-1 rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  className="rounded-md border border-gray-300 px-2 py-1 text-sm"
                 />
               ) : (
-                <span className="text-sm text-gray-700">{brand.name}</span>
+                <span className="font-semibold text-gray-900">{item.name}</span>
               )}
-            </div>
 
-            <div className="flex items-center gap-2">
-              {editingId === brand.id ? (
-                <button
-                  type="button"
-                  onClick={() => handleRename(brand.id)}
-                  className="text-xs font-medium text-blue-600 hover:underline"
-                >
-                  Guardar
-                </button>
-              ) : (
-                <IconButton
-                  variant="edit"
-                  label="Renombrar marca"
-                  onClick={() => {
-                    setEditingId(brand.id);
-                    setEditName(brand.name);
-                  }}
-                />
-              )}
-              <IconButton variant="delete" label="Eliminar marca" onClick={() => handleDelete(brand)} />
+              <div className="flex items-center gap-3">
+                <label className="flex cursor-pointer items-center gap-1 text-xs font-medium text-blue-600 hover:underline">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) =>
+                      e.target.files?.[0]
+                        ? saveLogo(item.slug, item.name, e.target.files[0])
+                        : undefined
+                    }
+                  />
+                  Cambiar logo
+                </label>
+
+                {renaming?.slug === item.slug ? (
+                  <button
+                    type="button"
+                    onClick={saveRename}
+                    className="text-xs font-medium text-green-600 hover:underline"
+                  >
+                    Guardar
+                  </button>
+                ) : (
+                  <IconButton
+                    variant="edit"
+                    label="Editar nombre"
+                    onClick={() => setRenaming({ slug: item.slug, name: item.name })}
+                  />
+                )}
+              </div>
             </div>
-          </li>
+          </div>
         ))}
-        {brands.length === 0 ? (
-          <li className="px-5 py-6 text-sm text-gray-500">Todavia no hay marcas.</li>
-        ) : null}
-      </ul>
-
-      <form onSubmit={handleCreate} className="flex flex-wrap gap-2 border-t border-gray-100 p-4">
-        <input
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          placeholder="Nueva marca"
-          className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setNewLogo(e.target.files?.[0] ?? null)}
-          className="w-full text-xs text-gray-500 sm:w-auto"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-        >
-          Agregar
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
