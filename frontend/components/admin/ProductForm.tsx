@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import type { Brand, Category, Product } from "@/lib/api";
+import { sizesForCategory, type SizeOption } from "@/lib/sizes";
 
 const MAX_IMAGES = 6;
-const DEFAULT_SIZES = ["36", "37", "38", "39", "40", "41", "42", "43"];
 
 type GalleryImage = {
   key: string;
@@ -16,7 +16,7 @@ type GalleryImage = {
 };
 
 type SizeRow = {
-  size: string;
+  label: string;
   stock: string;
 };
 
@@ -38,12 +38,6 @@ export default function ProductForm({
   const [images, setImages] = useState<GalleryImage[]>(
     (product?.images ?? []).map((url) => ({ key: url, url }))
   );
-  const [sizes, setSizes] = useState<SizeRow[]>(
-    DEFAULT_SIZES.map((size) => ({
-      size,
-      stock: String(product?.sizes.find((s) => s.size === size)?.stock ?? 0),
-    }))
-  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -51,6 +45,23 @@ export default function ProductForm({
   const [categoryId, setCategoryId] = useState(initialCategory ? String(initialCategory.id) : "");
   const initialBrand = brands.find((b) => b.slug === product?.brand);
   const [brandId, setBrandId] = useState(initialBrand ? String(initialBrand.id) : "");
+
+  const selectedCategory = categories.find((c) => String(c.id) === categoryId);
+  const sizeOptions: SizeOption[] = useMemo(
+    () => sizesForCategory(selectedCategory?.slug),
+    [selectedCategory?.slug],
+  );
+
+  const [sizes, setSizes] = useState<SizeRow[]>(
+    sizeOptions.map((opt) => ({
+      label: opt.label,
+      stock: String(
+        product?.sizes.find((s) => s.size === opt.label)?.stock ??
+          product?.sizes.find((s) => s.size === opt.col)?.stock ??
+          0
+      ),
+    }))
+  );
 
   function handleAddFiles(fileList: FileList | null) {
     if (!fileList) return;
@@ -68,8 +79,24 @@ export default function ProductForm({
     setImages((current) => current.filter((img) => img.key !== key));
   }
 
-  function updateSizeStock(size: string, stock: string) {
-    setSizes((current) => current.map((row) => (row.size === size ? { ...row, stock } : row)));
+  function updateSizeStock(label: string, stock: string) {
+    setSizes((current) => current.map((row) => (row.label === label ? { ...row, stock } : row)));
+  }
+
+  function handleCategoryChange(value: string) {
+    setCategoryId(value);
+    const cat = categories.find((c) => String(c.id) === value);
+    const opts = sizesForCategory(cat?.slug);
+    setSizes(
+      opts.map((opt) => ({
+        label: opt.label,
+        stock: String(
+          product?.sizes.find((s) => s.size === opt.label)?.stock ??
+            product?.sizes.find((s) => s.size === opt.col)?.stock ??
+            0
+        ),
+      }))
+    );
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -160,7 +187,7 @@ export default function ProductForm({
         .filter((row) => Number(row.stock) > 0)
         .map((row) => ({
           product_id: productId,
-          size: row.size,
+          size: row.label,
           stock: parseInt(row.stock, 10),
         }))
     );
@@ -216,7 +243,7 @@ export default function ProductForm({
           <select
             required
             value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
+            onChange={(e) => handleCategoryChange(e.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           >
             <option value="">Elige una categoria</option>
@@ -226,6 +253,14 @@ export default function ProductForm({
               </option>
             ))}
           </select>
+          {selectedCategory ? (
+            <p className="mt-1 text-xs text-gray-400">
+              Tallas de {selectedCategory.name === "MUJERR" ? "Mujer" : selectedCategory.name}:{" "}
+              {selectedCategory.slug === "mujerr" || selectedCategory.slug === "mujer"
+                ? "35-39 COL"
+                : "38-43 COL"}
+            </p>
+          ) : null}
         </div>
         <div>
           <label className="text-sm font-medium text-gray-700">Marca</label>
@@ -257,20 +292,27 @@ export default function ProductForm({
 
       <div>
         <label className="text-sm font-medium text-gray-700">Tallas y stock</label>
-        <div className="mt-2 grid grid-cols-4 gap-2">
+        <p className="mt-1 text-xs text-gray-400">
+          Escribe el stock disponible de cada talla (0 = sin unidades).
+        </p>
+        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {sizes.map((row) => (
-            <div key={row.size} className="flex flex-col items-center gap-1">
-              <span className="text-xs font-medium text-gray-600">{row.size}</span>
+            <div key={row.label} className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 px-3 py-2">
+              <span className="text-xs font-semibold text-gray-700">{row.label}</span>
               <input
                 type="number"
                 min="0"
                 value={row.stock}
-                onChange={(e) => updateSizeStock(row.size, e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 text-center text-sm"
+                onChange={(e) => updateSizeStock(row.label, e.target.value)}
+                className="w-16 rounded-md border border-gray-300 px-2 py-1 text-center text-sm"
+                aria-label={`Stock para ${row.label}`}
               />
             </div>
           ))}
         </div>
+        {sizes.length === 0 ? (
+          <p className="mt-2 text-xs text-gray-500">Elige una categoria primero para ver las tallas.</p>
+        ) : null}
       </div>
 
       <div>

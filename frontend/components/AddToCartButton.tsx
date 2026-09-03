@@ -33,7 +33,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
               key={s.size}
               type="button"
               onClick={() => setSize(s.size)}
-              className={`min-w-12 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+              className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
                 size === s.size
                   ? "border-gray-900 bg-gray-900 text-white"
                   : "border-gray-300 bg-white text-gray-700 hover:border-blue-600 hover:text-blue-600"
