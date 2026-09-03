@@ -57,7 +57,7 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
                 onClick={() => setOpen(false)}
                 className="text-base font-bold text-gray-900 transition hover:text-blue-600"
               >
-                Inicio
+                INICIO
               </Link>
             </li>
             <li>
@@ -66,7 +66,7 @@ export default function HamburgerMenu({ categories }: { categories: Category[] }
                 onClick={() => setOpen(false)}
                 className="text-base font-bold text-gray-900 transition hover:text-blue-600"
               >
-                Todos los productos
+                TODOS LOS PRODUCTOS
               </Link>
             </li>
             {categories.map((category) => (

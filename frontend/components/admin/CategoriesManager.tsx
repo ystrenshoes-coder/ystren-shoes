@@ -88,6 +88,25 @@ export default function CategoriesManager({ categories }: { categories: Category
     router.refresh();
   }
 
+  async function handleChangeImage(category: Category, file: File) {
+    setError(null);
+    try {
+      const url = await uploadImage(file);
+      const supabase = createClient();
+      const { error: updateError } = await supabase
+        .from("categories")
+        .update({ image_url: url })
+        .eq("id", category.id);
+      if (updateError) {
+        setError("No se pudo actualizar la imagen: " + updateError.message);
+        return;
+      }
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error subiendo la imagen");
+    }
+  }
+
   async function handleDelete(category: Category) {
     if (!confirm(`Borrar la categoria "${category.name}"? Los productos que la usaban quedaran sin categoria.`)) {
       return;
@@ -113,11 +132,11 @@ export default function CategoriesManager({ categories }: { categories: Category
           >
             <div className="flex flex-1 items-center gap-3">
               {category.image_url ? (
-                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-gray-100">
                   <Image src={category.image_url} alt={category.name} fill className="object-cover" />
                 </div>
               ) : (
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-600">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 font-bold text-blue-600">
                   {category.name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -134,7 +153,22 @@ export default function CategoriesManager({ categories }: { categories: Category
                   className="flex-1 rounded-md border border-gray-300 px-2 py-1 text-sm"
                 />
               ) : (
-                <span className="text-sm text-gray-700">{category.name}</span>
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-700">{category.name}</span>
+                  <label className="mt-1 flex cursor-pointer items-center gap-1 text-xs font-medium text-blue-600 hover:underline">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) =>
+                        e.target.files?.[0]
+                          ? handleChangeImage(category, e.target.files[0])
+                          : undefined
+                      }
+                    />
+                    Cambiar imagen
+                  </label>
+                </div>
               )}
             </div>
 

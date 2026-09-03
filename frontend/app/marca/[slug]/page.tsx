@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BrandIntro from "@/components/BrandIntro";
-import ProductCard from "@/components/ProductCard";
+import ProductGrid from "@/components/ProductGrid";
 import { getBrands, getProducts } from "@/lib/api";
 import { getBrandItem } from "@/lib/brands";
 
@@ -51,13 +51,7 @@ export default async function MarcaPage({
         {products.length === 0 ? (
           <p className="mt-10 text-gray-600">Aun no hay productos disponibles para esta marca.</p>
         ) : (
-          <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 md:grid-cols-4">
-            {products.map((product) => (
-              <div key={product.id} className="w-full">
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
+          <ProductGrid products={products} />
         )}
       </section>
     </>
