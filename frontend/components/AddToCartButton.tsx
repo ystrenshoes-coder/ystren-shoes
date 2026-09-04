@@ -22,26 +22,29 @@ export default function AddToCartButton({ product }: { product: Product }) {
   }
 
   return (
-    <div className="flex max-w-sm flex-col gap-4">
+    <div className="flex max-w-md flex-col gap-4">
       <div>
         <p className="mb-2 text-xs font-bold uppercase tracking-widest text-gray-500">
-          Talla
+          Talla disponible
         </p>
-        <div className="flex flex-wrap gap-2">
-          {availableSizes.map((s) => (
-            <button
-              key={s.size}
-              type="button"
-              onClick={() => setSize(s.size)}
-              className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
-                size === s.size
-                  ? "border-gray-900 bg-gray-900 text-white"
-                  : "border-gray-300 bg-white text-gray-700 hover:border-blue-600 hover:text-blue-600"
-              }`}
-            >
-              {s.size}
-            </button>
-          ))}
+        <div className="flex w-full flex-col gap-2">
+          {availableSizes.map((s) => {
+            const selected = size === s.size;
+            return (
+              <button
+                key={s.size}
+                type="button"
+                onClick={() => setSize(s.size)}
+                className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold transition ${
+                  selected
+                    ? "border-gray-900 bg-gray-900 text-white"
+                    : "border-gray-300 bg-white text-gray-700 hover:border-blue-600 hover:text-blue-600"
+                }`}
+              >
+                {s.size}
+              </button>
+            );
+          })}
         </div>
       </div>
       <button

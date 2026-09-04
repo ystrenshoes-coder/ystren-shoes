@@ -5,7 +5,12 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import type { Brand, Category, Product } from "@/lib/api";
-import { sizesForCategory, type SizeOption } from "@/lib/sizes";
+import {
+  parseSizeLabel,
+  sizeLabel,
+  sizesForCategory,
+  type SizeRowData,
+} from "@/lib/sizes";
 
 const MAX_IMAGES = 6;
 
@@ -15,10 +20,19 @@ type GalleryImage = {
   file?: File;
 };
 
-type SizeRow = {
-  label: string;
+type SizeRow = SizeRowData & {
   stock: string;
 };
+
+function initialStock(product: Product | undefined, data: SizeRowData): string {
+  const found =
+    product?.sizes.find((s) => s.size === sizeLabel(data)) ??
+    product?.sizes.find((s) => {
+      const p = parseSizeLabel(s.size);
+      return p && p.col === data.col;
+    });
+  return String(found?.stock ?? 0);
+}
 
 export default function ProductForm({
   product,
@@ -47,20 +61,13 @@ export default function ProductForm({
   const [brandId, setBrandId] = useState(initialBrand ? String(initialBrand.id) : "");
 
   const selectedCategory = categories.find((c) => String(c.id) === categoryId);
-  const sizeOptions: SizeOption[] = useMemo(
+  const sizeOptions: SizeRowData[] = useMemo(
     () => sizesForCategory(selectedCategory?.slug),
     [selectedCategory?.slug],
   );
 
   const [sizes, setSizes] = useState<SizeRow[]>(
-    sizeOptions.map((opt) => ({
-      label: opt.label,
-      stock: String(
-        product?.sizes.find((s) => s.size === opt.label)?.stock ??
-          product?.sizes.find((s) => s.size === opt.col)?.stock ??
-          0
-      ),
-    }))
+    sizeOptions.map((opt) => ({ ...opt, stock: initialStock(product, opt) }))
   );
 
   function handleAddFiles(fileList: FileList | null) {
@@ -79,24 +86,23 @@ export default function ProductForm({
     setImages((current) => current.filter((img) => img.key !== key));
   }
 
-  function updateSizeStock(label: string, stock: string) {
-    setSizes((current) => current.map((row) => (row.label === label ? { ...row, stock } : row)));
+  function updateSizeField(col: string, field: keyof SizeRowData, value: string) {
+    setSizes((current) =>
+      current.map((row) => (row.col === col ? { ...row, [field]: value } : row))
+    );
+  }
+
+  function updateSizeStock(col: string, stock: string) {
+    setSizes((current) =>
+      current.map((row) => (row.col === col ? { ...row, stock } : row))
+    );
   }
 
   function handleCategoryChange(value: string) {
     setCategoryId(value);
     const cat = categories.find((c) => String(c.id) === value);
     const opts = sizesForCategory(cat?.slug);
-    setSizes(
-      opts.map((opt) => ({
-        label: opt.label,
-        stock: String(
-          product?.sizes.find((s) => s.size === opt.label)?.stock ??
-            product?.sizes.find((s) => s.size === opt.col)?.stock ??
-            0
-        ),
-      }))
-    );
+    setSizes(opts.map((opt) => ({ ...opt, stock: initialStock(product, opt) })));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -187,7 +193,7 @@ export default function ProductForm({
         .filter((row) => Number(row.stock) > 0)
         .map((row) => ({
           product_id: productId,
-          size: row.label,
+          size: sizeLabel(row),
           stock: parseInt(row.stock, 10),
         }))
     );
@@ -198,7 +204,7 @@ export default function ProductForm({
       return;
     }
 
-    router.push("/admin/productos");
+    router.push("/admin/inventario");
     router.refresh();
   }
 
@@ -293,20 +299,89 @@ export default function ProductForm({
       <div>
         <label className="text-sm font-medium text-gray-700">Tallas y stock</label>
         <p className="mt-1 text-xs text-gray-400">
-          Escribe el stock disponible de cada talla (0 = sin unidades).
+          Edita cada valor de la talla y escribe el stock (0 = sin unidades). El cliente
+          vera: <span className="font-semibold text-gray-600">{sizes[0] ? sizeLabel(sizes[0]) : "38 COL / 7 US / 40 EUR / 25 CM (MEN)"}</span>
         </p>
-        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="mt-2 flex flex-col gap-3">
           {sizes.map((row) => (
-            <div key={row.label} className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 px-3 py-2">
-              <span className="text-xs font-semibold text-gray-700">{row.label}</span>
-              <input
-                type="number"
-                min="0"
-                value={row.stock}
-                onChange={(e) => updateSizeStock(row.label, e.target.value)}
-                className="w-16 rounded-md border border-gray-300 px-2 py-1 text-center text-sm"
-                aria-label={`Stock para ${row.label}`}
-              />
+            <div
+              key={row.col}
+              className="rounded-lg border border-gray-200 p-3"
+            >
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+                <div>
+                  <label className="text-[10px] font-semibold uppercase text-gray-500">COL</label>
+                  <input
+                    type="text"
+                    value={row.col}
+                    onChange={(e) => updateSizeField(row.col, "col", e.target.value)}
+                    className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-semibold uppercase text-gray-500">US</label>
+                  <input
+                    type="text"
+                    value={row.us}
+                    onChange={(e) => updateSizeField(row.col, "us", e.target.value)}
+                    className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-semibold uppercase text-gray-500">EUR</label>
+                  <input
+                    type="text"
+                    value={row.eur}
+                    onChange={(e) => updateSizeField(row.col, "eur", e.target.value)}
+                    className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-semibold uppercase text-gray-500">CM</label>
+                  <input
+                    type="text"
+                    value={row.cm}
+                    onChange={(e) => updateSizeField(row.col, "cm", e.target.value)}
+                    className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-semibold uppercase text-gray-500">Genero</label>
+                  <select
+                    value={row.suffix}
+                    onChange={(e) =>
+                      updateSizeField(row.col, "suffix", e.target.value as "WM" | "MEN")
+                    }
+                    className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  >
+                    <option value="WM">WM</option>
+                    <option value="MEN">MEN</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mt-2 flex items-center justify-between gap-2">
+                <div className="text-right text-[10px] leading-tight text-gray-400 sm:hidden">
+                  <span className="font-medium text-gray-600">
+                    {sizeLabel(row)}
+                  </span>
+                </div>
+                <p className="hidden text-[11px] font-medium text-gray-600 sm:block">
+                  {sizeLabel(row)}
+                </p>
+                <div className="flex items-center gap-2">
+                  <label className="text-[10px] font-semibold uppercase text-gray-500">
+                    Stock
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={row.stock}
+                    onChange={(e) => updateSizeStock(row.col, e.target.value)}
+                    className="w-16 rounded-md border border-gray-300 px-2 py-1 text-center text-sm"
+                    aria-label={`Stock para ${sizeLabel(row)}`}
+                  />
+                </div>
+              </div>
             </div>
           ))}
         </div>

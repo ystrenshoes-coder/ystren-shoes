@@ -1,30 +1,52 @@
-export type SizeOption = {
+export type SizeRowData = {
   col: string;
-  label: string;
+  us: string;
+  eur: string;
+  cm: string;
+  suffix: "WM" | "MEN";
 };
 
-export const WOMEN_SIZES: SizeOption[] = [
-  { col: "35", label: "35 COL / 6 US / 36 EUR / 23 CM (WM)" },
-  { col: "36", label: "36 COL / 6.5 US / 37 EUR / 23.5/24 CM (WM)" },
-  { col: "37", label: "37 COL / 7 US / 38 EUR / 24 CM (WM)" },
-  { col: "38", label: "38 COL / 8 US / 39 EUR / 25 CM (WM)" },
-  { col: "39", label: "39 COL / 9 US / 40 EUR / 26 CM (WM)" },
+export const WOMEN_SIZES: SizeRowData[] = [
+  { col: "35", us: "6", eur: "36", cm: "23", suffix: "WM" },
+  { col: "36", us: "6.5", eur: "37", cm: "23.5/24", suffix: "WM" },
+  { col: "37", us: "7", eur: "38", cm: "24", suffix: "WM" },
+  { col: "38", us: "8", eur: "39", cm: "25", suffix: "WM" },
+  { col: "39", us: "9", eur: "40", cm: "26", suffix: "WM" },
 ];
 
-export const MEN_SIZES: SizeOption[] = [
-  { col: "38", label: "38 COL / 7 US / 40 EUR / 25 CM (MEN)" },
-  { col: "39", label: "39 COL / 8 US / 41 EUR / 25.6/26 CM (MEN)" },
-  { col: "40", label: "40 COL / 8.5 US / 42 EUR / 26 CM (MEN)" },
-  { col: "41", label: "41 COL / 9 US / 43 EUR / 27 CM (MEN)" },
-  { col: "42", label: "42 COL / 10 US / 44 EUR / 28 CM (MEN)" },
-  { col: "43", label: "43 COL / 11 US / 45 EUR / 28.5 CM (MEN)" },
+export const MEN_SIZES: SizeRowData[] = [
+  { col: "38", us: "7", eur: "40", cm: "25", suffix: "MEN" },
+  { col: "39", us: "8", eur: "41", cm: "25.6/26", suffix: "MEN" },
+  { col: "40", us: "8.5", eur: "42", cm: "26", suffix: "MEN" },
+  { col: "41", us: "9", eur: "43", cm: "27", suffix: "MEN" },
+  { col: "42", us: "10", eur: "44", cm: "28", suffix: "MEN" },
+  { col: "43", us: "11", eur: "45", cm: "28.5", suffix: "MEN" },
 ];
 
-export function sizesForCategory(categorySlug?: string | null): SizeOption[] {
-  if (categorySlug === "mujerr" || categorySlug === "mujer") {
+export function sizeLabel(row: SizeRowData): string {
+  return `${row.col} COL / ${row.us} US / ${row.eur} EUR / ${row.cm} CM (${row.suffix})`;
+}
+
+export function parseSizeLabel(label: string): SizeRowData | null {
+  const m = label.match(
+    /(\S+)\s+COL\s*\/\s*(\S+)\s+US\s*\/\s*(\S+)\s+EUR\s*\/\s*(\S+)\s+CM\s*\(?(WM|MEN)?\)?/i
+  );
+  if (!m) return null;
+  return {
+    col: m[1],
+    us: m[2],
+    eur: m[3],
+    cm: m[4],
+    suffix: (m[5]?.toUpperCase() as "WM" | "MEN") ?? "MEN",
+  };
+}
+
+export function sizesForCategory(categorySlug?: string | null): SizeRowData[] {
+  const slug = categorySlug?.toLowerCase();
+  if (slug === "mujerr" || slug === "mujer") {
     return WOMEN_SIZES;
   }
-  if (categorySlug === "hombre") {
+  if (slug === "hombre") {
     return MEN_SIZES;
   }
   return MEN_SIZES;
