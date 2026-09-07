@@ -8,8 +8,10 @@ import {
   useState,
 } from "react";
 import type { Product } from "@/lib/api";
+import { createClient } from "@/lib/supabase/client";
 
-const STORAGE_KEY = "ystren-shoes-cart";
+const BASE_KEY = "ystren-shoes-cart";
+const ANON_KEY = "anonymous";
 
 export type CartItem = {
   product: Product;
@@ -33,27 +35,45 @@ function sameLine(item: CartItem, productId: number, size: string) {
   return item.product.id === productId && item.size === size;
 }
 
+function getStorageKey(): string {
+  return `${BASE_KEY}-${ANON_KEY}`;
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [storageKey, setStorageKey] = useState(getStorageKey());
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setItems(JSON.parse(stored));
-      } catch {
-        // Ignore corrupted cart data.
-      }
-    }
-    setHydrated(true);
+    let resolvedKey = getStorageKey();
+    const supabase = createClient();
+    supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        if (data.user) {
+          resolvedKey = `${BASE_KEY}-${data.user.id}`;
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setStorageKey(resolvedKey);
+        try {
+          const stored = localStorage.getItem(resolvedKey);
+          if (stored) {
+            setItems(JSON.parse(stored));
+          }
+        } catch {
+          // Ignore corrupted cart data.
+        }
+        setHydrated(true);
+      });
   }, []);
 
   useEffect(() => {
-    if (hydrated) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    if (hydrated && storageKey) {
+      localStorage.setItem(storageKey, JSON.stringify(items));
     }
-  }, [items, hydrated]);
+  }, [items, hydrated, storageKey]);
 
   function addItem(product: Product, size: string, quantity: number) {
     setItems((current) => {

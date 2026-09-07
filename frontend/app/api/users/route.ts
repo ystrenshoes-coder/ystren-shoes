@@ -1,6 +1,15 @@
 import "server-only";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+
+async function isAdmin(): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  if (!data.user) return false;
+  const role = data.user.app_metadata?.role ?? data.user.user_metadata?.role ?? "staff";
+  return role === "admin";
+}
 
 export async function GET() {
   const supabase = createAdminClient();
@@ -16,12 +25,17 @@ export async function GET() {
     role: u.app_metadata?.role ?? u.user_metadata?.role ?? "staff",
     created_at: u.created_at ?? null,
     last_sign_in_at: u.last_sign_in_at ?? null,
+    disabled: u.banned_until != null,
   }));
 
   return NextResponse.json(mapped);
 }
 
 export async function POST(request: Request) {
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
+
   const body = await request.json();
   const { email, password, role } = body;
 

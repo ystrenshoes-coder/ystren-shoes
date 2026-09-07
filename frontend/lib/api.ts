@@ -171,6 +171,7 @@ export type AdminUser = {
   role: string;
   created_at: string | null;
   last_sign_in_at: string | null;
+  disabled: boolean;
 };
 
 export async function getUsers(): Promise<AdminUser[]> {
@@ -195,16 +196,26 @@ export async function createUser(
   }
 }
 
-export async function updateUserRole(
+export async function updateUser(
   userId: string,
-  role: string,
+  updates: { role?: string; password?: string; disabled?: boolean },
 ): Promise<void> {
   const res = await fetch(`/api/users/${userId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ role }),
+    body: JSON.stringify(updates),
   });
-  if (!res.ok) throw new Error("No se pudo actualizar el rol");
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "No se pudo actualizar el usuario");
+  }
+}
+
+export async function updateUserRole(
+  userId: string,
+  role: string,
+): Promise<void> {
+  await updateUser(userId, { role });
 }
 
 export async function deleteUser(userId: string): Promise<void> {
